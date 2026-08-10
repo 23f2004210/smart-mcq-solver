@@ -2,17 +2,19 @@ import streamlit as st
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
-# Load model and tokenizer
 
+# Hugging Face model
 MODEL_PATH = "ilesha06/smart-mcq-roberta"
 
-tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
 
-model = AutoModelForSequenceClassification.from_pretrained(
-    MODEL_PATH
-)
+# Load model only when needed
+@st.cache_resource
+def load_model():
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
+    model = AutoModelForSequenceClassification.from_pretrained(MODEL_PATH)
+    model.eval()
 
-model.eval()
+    return tokenizer, model
 
 
 # Label mapping
@@ -24,8 +26,12 @@ id2label = {
     4: "E"
 }
 
+
 # Prediction function
 def predict(question, options):
+
+    # Load model here
+    tokenizer, model = load_model()
 
     combined_text = (
         question
@@ -67,7 +73,10 @@ def predict(question, options):
     return predictions
 
 
+# -----------------------------
 # Streamlit UI
+# -----------------------------
+
 st.title("Smart MCQ Solver")
 
 st.write(
@@ -80,7 +89,6 @@ question = st.text_area(
     "Question",
     placeholder="Enter the question here..."
 )
-
 
 option_a = st.text_input("Option A")
 option_b = st.text_input("Option B")
@@ -115,21 +123,15 @@ if st.button("Solve MCQ"):
             "E": option_e
         }
 
-        predictions = predict(
-            question,
-            options
-        )
+        with st.spinner("Loading model and generating prediction..."):
+
+            predictions = predict(
+                question,
+                options
+            )
 
         st.subheader("Top 3 Predictions")
 
-        st.write(
-            f"1. **{predictions[0]}**"
-        )
-
-        st.write(
-            f"2. **{predictions[1]}**"
-        )
-
-        st.write(
-            f"3. **{predictions[2]}**"
-        )
+        st.write(f"1. **{predictions[0]}**")
+        st.write(f"2. **{predictions[1]}**")
+        st.write(f"3. **{predictions[2]}**")
