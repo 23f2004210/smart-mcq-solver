@@ -1,7 +1,7 @@
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
-MODEL_PATH = "./roberta_deployment"
+MODEL_PATH = "ilesha06/smart-mcq-roberta"
 
 # Load tokenizer
 tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
