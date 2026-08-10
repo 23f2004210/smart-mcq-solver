@@ -4,7 +4,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 # Load model and tokenizer
 
-MODEL_PATH = "./roberta_deployment"
+MODEL_PATH = "ilesha06/smart-mcq-roberta"
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
 
