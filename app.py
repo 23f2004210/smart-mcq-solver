@@ -73,9 +73,7 @@ def predict(question, options):
     return predictions
 
 
-# -----------------------------
 # Streamlit UI
-# -----------------------------
 
 st.title("Smart MCQ Solver")
 
